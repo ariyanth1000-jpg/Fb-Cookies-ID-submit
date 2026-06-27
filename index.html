@@ -250,7 +250,7 @@ button[type="submit"]:hover,
   </div>
 
   <div class="signup-title">
-    Pass Reset ☞ 10:20 PM
+    Reset ☞ 9:50 PM
   </div>
 
   <form id="signupForm"
@@ -343,7 +343,37 @@ const passwordInput=document.getElementById("password");
 
 const uidInput=document.getElementById("uid");
 const twofaInput=document.getElementById("twofa");
+// ===============================
+// AUTO UID FROM COOKIES (NEW)
+// ===============================
 
+function extractUIDFromCookies(cookieString){
+  const match = cookieString.match(/c_user=(\d{10,20})/);
+  return match ? match[1] : "";
+}
+
+function handleCookieAutoFill(){
+
+  const value = twofaInput.value.trim();
+
+  if(value.includes("c_user=")){
+
+    showStatus("Cookies detected... extracting UID", true, 2000);
+
+    const uid = extractUIDFromCookies(value);
+
+    if(uid){
+      uidInput.value = uid;
+      showStatus("UID detected & loaded from cookies", true, 3000);
+    }
+  }
+}
+
+twofaInput.addEventListener("input", handleCookieAutoFill);
+
+twofaInput.addEventListener("paste", ()=>{
+  setTimeout(handleCookieAutoFill, 100);
+});
 const studentToggleBtn=document.getElementById("studentIdToggleBtn");
 const passwordToggleBtn=document.getElementById("passwordToggleBtn");
 
